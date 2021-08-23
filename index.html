@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- jQuery library -->
+  <script src="jquery.min.js"></script>
+
+
+  <title>drag drop</title>
+  <style>
+    .drag-area,
+    .drop-area {
+      width: 200px;
+      height: 200px;
+      background: #fff;
+      display: inline-block;
+      vertical-align: top;
+      position: relative;
+      margin-left: 30px;
+      border: 1px solid #ddd;
+      box-shadow: 3px 3px 6px 3px rgba(0, 0, 0, 0.06)
+    }
+
+    .area {
+      position: absolute;
+      margin: 0 auto;
+      color: #ccc;
+      font-size: 20px;
+      bottom: 10px;
+      left: 20px;
+    }
+
+    .box {
+      width: 50px;
+      height: 50px;
+      background: #673AB7;
+      color: #fff;
+      text-align: center;
+      z-index: 2;
+      border: 2px solid #512DA8;
+
+    }
+
+    .box span {
+      width: 15px;
+      height: 15px;
+      position: absolute;
+      right: 0;
+      top: 0;
+      color: #FFF;
+      background-color: red;
+      border-radius: 50%;
+      cursor: pointer;
+      font-size: 10px;
+      line-height: 15px;
+      font-weight: bold;
+      text-align: center;
+    }
+
+    .result {
+      display: inline-block;
+      margin-left: 30px;
+    }
+  </style>
+
+</head>
+
+<body>
+ 
+  <div class="drag-area">
+    <div class="area">Droppable Area 1</div>
+    <div class="box" data-value="1">Box1</div>
+    <div class="box" data-value="2">Box2</div>
+    <div class="box" data-value="3">Box3</div>
+  </div>
+  <div class="drop-area">
+    <div class="area">Droppable Area 2</div>
+  </div>
+  <div class="drop-area">
+    <div class="area">Droppable Area 3</div>
+  </div>
+  <div class="drop-area">
+    <div class="area">Droppable Area 4</div>
+  </div>
+  <div class="result">-</div>
+
+</body>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+
+<script>
+  // handle draggable function
+  $(".box").draggable({
+    scope: 'demoBox',
+    revert: 'invalid',
+    revertDuration: 100,
+    addClass: false,
+    accept: '.drop-area',
+    // start: function (event, ui) {
+    //   //Reset
+    //   
+    // }
+  });
+
+  // handle droppable function
+  $(".drop-area").droppable({
+    scope: 'demoBox',
+    drop: function (event, ui) {
+      var area = $(this).find(".area").html();
+      var box = $(ui.draggable).html()
+      //Realign item
+      $(ui.draggable).css({ top: 0, left: 0 }).clone().prependTo(this).append('<span>x</span>');
+      const boxData = $(ui.draggable).data();
+      $('.drag-area').find(`.box[data-value=${boxData.value}]`).css('display', 'none');
+    }
+  })
+  // handle close btn
+  $(document).on('click', '.box span', function () {
+    const boxData = $(this).closest('.box').data();
+    console.log(boxData.value);
+    $(this).closest('.box').remove();
+    $('.drag-area').find(`.box[data-value=${boxData.value}]`).css('display', 'block');
+  });
+</script>
+
+</html>
